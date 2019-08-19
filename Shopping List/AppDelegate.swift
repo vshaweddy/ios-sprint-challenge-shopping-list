@@ -7,16 +7,34 @@
 //
 
 import UIKit
+import UserNotifications
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    let notificationCenter = UNUserNotificationCenter.current()
+    
+    let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        let options: UNAuthorizationOptions = [.alert, .sound, .badge]
+        
+        notificationCenter.requestAuthorization(options: options) { (didAllow, error) in
+            if !didAllow {
+                print("User has declined notifications")
+            }
+        }
         return true
+    }
+    
+    func scheduleNotification(notificationType: String) {
+        let content = UNMutableNotificationContent()
+        content.title = notificationType
+        content.body = "This is example how to create "
+        content.sound = UNNotificationSound.default()
+        content.badge = 1
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
